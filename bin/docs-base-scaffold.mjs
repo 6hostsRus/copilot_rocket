@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * docs-base-scaffold
+ * copilot-rocket
  * Minimal CLI to scaffold docs_base templates into a target repo.
  */
 import fs from 'node:fs';
@@ -28,7 +28,7 @@ function scaffold(targetDir) {
 
 function usage() {
   console.log(`Usage:
-  docs-base-scaffold init [targetDir=.]
+  copilot-rocket init [targetDir=.]
   `);
 }
 

@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial stable release of `docs-base-bundle`.
 - Templates for Scope Card, Rooted Commands, Work Ledger, Bookends, Needs Clarification, and User Decisions.
-- CLI `docs-base-scaffold` to copy templates into a repo.
+- CLI `copilot-rocket` to copy templates into a repo.
 - CI workflow and publish guidance.
 
 ### Changed

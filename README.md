@@ -11,7 +11,7 @@ npm i -D docs-base-bundle
 ## Use
 
 ```sh
-npx docs-base-scaffold init
+npx copilot-rocket init
 # creates ./docs_base with baseline templates
 ```
 

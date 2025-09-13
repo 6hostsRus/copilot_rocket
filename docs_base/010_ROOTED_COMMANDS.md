@@ -14,5 +14,5 @@
 npm ci
 
 # run package CLI in consuming repo
-npx docs-base-scaffold init
+npx copilot-rocket init
 ```
