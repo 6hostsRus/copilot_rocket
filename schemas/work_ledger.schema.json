@@ -17,7 +17,15 @@
         "title": { "type": "string", "minLength": 1 },
         "state": {
           "type": "string",
-          "enum": ["Todo","In-Progress","Review","Done","Blocked","Needs-Clarification","Waiting"]
+          "enum": [
+            "Todo",
+            "In-Progress",
+            "Review",
+            "Done",
+            "Blocked",
+            "Needs-Clarification",
+            "Waiting"
+          ]
         },
         "when": { "type": "string", "format": "date-time" },
         "who": { "type": "string", "minLength": 1 },

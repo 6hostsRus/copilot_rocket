@@ -23,8 +23,8 @@ test('creates zip and excludes .gitignore entries', () => {
     // run bundler from tmp directory
     execFileSync('node', [BIN, outZip], { cwd: tmp });
     assert.ok(existsSync(path.join(tmp, 'out.zip')));
-  const stats = statSync(path.join(tmp, 'out.zip'));
-  assert.ok(stats.size > 0);
+    const stats = statSync(path.join(tmp, 'out.zip'));
+    assert.ok(stats.size > 0);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

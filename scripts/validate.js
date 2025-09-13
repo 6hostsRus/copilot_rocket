@@ -49,7 +49,7 @@ async function main() {
   const cfgPaths = [
     path.join(root, 'rocket.config.json'),
     path.join(root, 'rocket.config.yaml'),
-    path.join(root, 'rocket.config.yml')
+    path.join(root, 'rocket.config.yml'),
   ];
   if (args.config) cfgPaths.unshift(path.resolve(root, args.config));
   for (const p of cfgPaths) {
@@ -66,14 +66,24 @@ async function main() {
   }
 
   // precedence: CLI args > config file > defaults
-  const workSchemaPath = args.workSchema || (config.schemas && config.schemas.work_ledger) || path.join(__dirname, '..', 'schemas', 'work_ledger.schema.json');
-  const decisionsSchemaPath = args.decisionsSchema || (config.schemas && config.schemas.user_decisions) || path.join(__dirname, '..', 'schemas', 'user-decisions-registry.schema.json');
+  const workSchemaPath =
+    args.workSchema ||
+    (config.schemas && config.schemas.work_ledger) ||
+    path.join(__dirname, '..', 'schemas', 'work_ledger.schema.json');
+  const decisionsSchemaPath =
+    args.decisionsSchema ||
+    (config.schemas && config.schemas.user_decisions) ||
+    path.join(__dirname, '..', 'schemas', 'user-decisions-registry.schema.json');
 
-  const workGlobs = (args.workFiles && [args.workFiles]) || (config.files && config.files.work_ledger) || ['**/work_ledger.{yml,yaml,json}'];
-  const decisionsGlobs = (args.decisionsFiles && [args.decisionsFiles]) || (config.files && config.files.user_decisions) || ['**/user-decisions-registry.{yml,yaml,json}'];
+  const workGlobs = (args.workFiles && [args.workFiles]) ||
+    (config.files && config.files.work_ledger) || ['**/work_ledger.{yml,yaml,json}'];
+  const decisionsGlobs = (args.decisionsFiles && [args.decisionsFiles]) ||
+    (config.files && config.files.user_decisions) || ['**/user-decisions-registry.{yml,yaml,json}'];
 
   const ledgerSchema = JSON.parse(fs.readFileSync(path.resolve(root, workSchemaPath), 'utf8'));
-  const registrySchema = JSON.parse(fs.readFileSync(path.resolve(root, decisionsSchemaPath), 'utf8'));
+  const registrySchema = JSON.parse(
+    fs.readFileSync(path.resolve(root, decisionsSchemaPath), 'utf8')
+  );
 
   // expand globs
   const ledgerFiles = await fg(workGlobs, { cwd: root, absolute: true, dot: true });
@@ -92,7 +102,9 @@ async function main() {
         // if YAML contains $schema pointer, try to load that schema instead
         if (data && typeof data === 'object' && data.$schema) {
           try {
-            const custom = JSON.parse(fs.readFileSync(path.resolve(path.dirname(f), data.$schema), 'utf8'));
+            const custom = JSON.parse(
+              fs.readFileSync(path.resolve(path.dirname(f), data.$schema), 'utf8')
+            );
             console.log('Using custom $schema for', path.relative(root, f));
             const vc = ajv.compile(custom);
             const validc = vc(data);
@@ -128,7 +140,9 @@ async function main() {
   validateAndReport(ledgerSchema, ledgerFiles, 'work_ledger');
   validateAndReport(registrySchema, registryFiles, 'user-decisions-registry');
 
-  console.log(`Summary: work_ledger files validated: ${ledgerCount}, user_decisions files validated: ${registryCount}`);
+  console.log(
+    `Summary: work_ledger files validated: ${ledgerCount}, user_decisions files validated: ${registryCount}`
+  );
 
   if (!ledgerFiles.length) {
     console.log('No work_ledger files found to validate.');

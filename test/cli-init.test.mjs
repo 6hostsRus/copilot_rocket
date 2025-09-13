@@ -31,9 +31,16 @@ test('init creates files and respects --force and --init-readme and --seed', () 
     // without force, running again should skip and not change README
     execFileSync('node', [BIN, 'init', tmp], { encoding: 'utf8' });
     // with init-readme and force, README is created
-    execFileSync('node', [BIN, 'init', tmp, '--force', '--init-readme', '--seed', 'ledger', '--seed', 'registry'], { encoding: 'utf8' });
+    execFileSync(
+      'node',
+      [BIN, 'init', tmp, '--force', '--init-readme', '--seed', 'ledger', '--seed', 'registry'],
+      { encoding: 'utf8' }
+    );
     assert.ok(existsSync(path.join(tmp, 'README.md')));
-    assert.ok(existsSync(path.join(tmp, 'work_ledger.yaml')) || existsSync(path.join(tmp, 'user-decisions-registry.yaml')));
+    assert.ok(
+      existsSync(path.join(tmp, 'work_ledger.yaml')) ||
+        existsSync(path.join(tmp, 'user-decisions-registry.yaml'))
+    );
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
