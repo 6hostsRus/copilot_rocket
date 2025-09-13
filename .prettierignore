@@ -1,0 +1,11 @@
+# Ignore package json files
+package.json
+package-lock.json
+
+# Node modules and build
+node_modules
+dist
+coverage
+
+# Misc
+.DS_Store
