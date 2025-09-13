@@ -68,8 +68,13 @@ Flags:
 
   const outZip = args.find((a) => !a.startsWith('-')) || 'project_bundle.zip';
   const outRoot = args.includes('--out-root') || args.includes('-r');
-  const distDir = outRoot ? '.' : path.join('tools', 'dist');
-  const outPath = path.join(distDir, outZip);
+  let outPath;
+  if (path.isAbsolute(outZip)) {
+    outPath = outZip;
+  } else {
+    const distDir = outRoot ? '.' : path.join('tools', 'dist');
+    outPath = path.join(distDir, outZip);
+  }
 
   const ig = readGitignore(root);
   const files = listFiles(root, ig);
