@@ -1,11 +1,20 @@
 # copilot-rocket
 
+![npm](https://img.shields.io/npm/v/copilot-rocket.svg)
+![CI](https://img.shields.io/github/actions/workflow/status/6hostsRus/copilot_rocket/ci.yml?branch=main)
+
 Modular docs bundle for AI agent workflows. Ships opinionated templates and a tiny CLI.
 
 ## Install
 
 ```sh
 npm i -D copilot-rocket
+```
+
+30-second hello
+
+```sh
+npx copilot-rocket init ./docs --init-readme --seed ledger --seed registry
 ```
 
 ## Use
