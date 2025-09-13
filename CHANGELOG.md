@@ -8,7 +8,6 @@
 
 - Added `--out-root` / `-r` option to write the bundle to the project root instead of `tools/dist`.
 
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
@@ -49,4 +48,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed package-bundle path handling for absolute out paths and ensured bundling excludes .gitignore entries correctly.
-
