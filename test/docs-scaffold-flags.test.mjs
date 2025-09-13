@@ -20,6 +20,10 @@ test('list mode prints planned files and exits without writes', () => {
     assert.strictEqual(existsSync(path.join(tmp, 'docs', 'ai')), false);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
+    // ensure no local cache file is left behind
+    try {
+      rmSync(path.join(process.cwd(), '.cr_init_cache.json'), { force: true });
+    } catch {}
   }
 });
 
@@ -53,15 +57,22 @@ test('ai-template override and force overwrite ai_instructions.md', () => {
       [BIN, 'init', tmp, '--non-interactive', '--ai-template', tpl, '--force', '--init-readme'],
       { encoding: 'utf8' }
     );
-    // expect ai_instructions.md was created
-    assert.strictEqual(existsSync(path.join(process.cwd(), 'ai_instructions.md')), true);
-    const read = readFileSync(path.join(process.cwd(), 'ai_instructions.md'), 'utf8');
+    // expect ai_instructions.md was created in the project root (tmp)
+    assert.strictEqual(existsSync(path.join(tmp, 'ai_instructions.md')), true);
+    const read = readFileSync(path.join(tmp, 'ai_instructions.md'), 'utf8');
     assert.match(read, /AI TEST/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
-    // cleanup ai_instructions.md
+    // cleanup ai_instructions.md in repo root and tmp (safety)
     try {
       rmSync(path.join(process.cwd(), 'ai_instructions.md'), { force: true });
+    } catch {}
+    try {
+      rmSync(path.join(tmp, 'ai_instructions.md'), { force: true });
+    } catch {}
+    // ensure no local cache file is left behind
+    try {
+      rmSync(path.join(process.cwd(), '.cr_init_cache.json'), { force: true });
     } catch {}
   }
 });
@@ -92,6 +103,10 @@ test('seed and seed-to write sample files', () => {
     );
   } finally {
     rmSync(tmp, { recursive: true, force: true });
+    // ensure no local cache file is left behind
+    try {
+      rmSync(path.join(process.cwd(), '.cr_init_cache.json'), { force: true });
+    } catch {}
   }
 });
 
@@ -106,5 +121,9 @@ test('init-readme creates README at project root when requested', () => {
     assert.strictEqual(existsSync(path.join(tmp, 'README.md')), true);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
+    // ensure no local cache file is left behind
+    try {
+      rmSync(path.join(process.cwd(), '.cr_init_cache.json'), { force: true });
+    } catch {}
   }
 });

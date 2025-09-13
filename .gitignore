@@ -22,3 +22,6 @@ coverage/
 *.tgz
 # Misc
 *.swp
+
+# Local cache for interactive init flow
+.cr_init_cache.json

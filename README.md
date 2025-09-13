@@ -3,6 +3,17 @@
 ![npm](https://img.shields.io/npm/v/copilot-rocket.svg)
 ![CI](https://img.shields.io/github/actions/workflow/status/6hostsRus/copilot_rocket/ci.yml?branch=main)
 
+NOTE: In CI or automated scripts, prefer a deterministic workspace via `--project-root` to avoid writing into the repository root.
+
+Example (CI-safe):
+
+```sh
+# run in CI and keep outputs inside the job workspace
+node ./bin/docs-scaffold.mjs init ./ --non-interactive --project-root $GITHUB_WORKSPACE
+```
+
+The workflow also checks that `ai_instructions.md` in the repo root isn't modified by CI; if it is, CI fails with remediation hints.
+
 Modular docs bundle for AI agent workflows. Ships opinionated templates and a tiny CLI.
 
 ## Install

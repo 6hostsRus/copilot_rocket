@@ -99,6 +99,11 @@ function parseArgs(argv) {
         args.aiTemplate = next;
         i++;
         break;
+      case '--project-root':
+        args.projectRoot = next;
+        args.projectRootExplicit = true;
+        i++;
+        break;
       case '--init-readme':
         args.initReadme = true;
         break;
@@ -158,8 +163,10 @@ Usage:
 }
 
 async function promptFlow(args) {
-  const cachePath = path.resolve(process.cwd(), '.cr_init_cache.json');
-  const cache = await readJson(cachePath, {});
+  // Read any existing cache from the current working directory (legacy location),
+  // but prefer writing cache into the explicit projectRoot so tests/CI don't pollute repo root.
+  const legacyCachePath = path.resolve(process.cwd(), '.cr_init_cache.json');
+  const cache = await readJson(legacyCachePath, {});
 
   // default non-interactive when stdin is not a TTY
   args.nonInteractive = !!args.nonInteractive || !process.stdin.isTTY;
@@ -178,12 +185,29 @@ async function promptFlow(args) {
 
   // 1) Target Docs Directory
   // If a positional arg is supplied (project root), prefer creating docs/ai inside it
-  let projectRoot = process.cwd();
+  let projectRoot = args.projectRoot ? normalize(args.projectRoot) : process.cwd();
+  // Was projectRoot explicitly provided by the user (CLI flag or positional)?
+  let projectRootExplicit = false;
   let targetDir = args.targetDir || cache.targetDir || 'docs/ai';
+  // Ensure cached targetDir is safe: resolve and confirm it's inside projectRoot.
+  try {
+    const resolvedCache = cache.targetDir ? path.resolve(process.cwd(), cache.targetDir) : null;
+    if (
+      resolvedCache &&
+      !resolvedCache.startsWith(projectRoot + path.sep) &&
+      resolvedCache !== projectRoot
+    ) {
+      // cache points outside the current project; ignore it for safety (CI/workers)
+      targetDir = args.targetDir || 'docs/ai';
+    }
+  } catch (err) {
+    // ignore resolution errors and fall back to defaults
+  }
   if (!args.targetDir && args._ && args._[1]) {
     const pos = args._[1];
     if (!/\bdocs(\/|\\|$)/.test(pos)) {
       projectRoot = normalize(pos);
+      projectRootExplicit = true;
       targetDir = path.join(projectRoot, 'docs', 'ai');
     } else {
       targetDir = normalize(pos);
@@ -287,6 +311,8 @@ async function promptFlow(args) {
   };
   if (!args.noCache) {
     try {
+      // write cache into the project root to avoid polluting the repository root during CI/tests
+      const cachePath = path.resolve(projectRoot || process.cwd(), '.cr_init_cache.json');
       await writeFile(cachePath, JSON.stringify(newCache, null, 2), dryRun);
     } catch (err) {
       console.error('Warning: failed to write cache:', err.message);
@@ -310,6 +336,7 @@ async function promptFlow(args) {
     seedTo: args.seedTo || 'root',
     seeds: args.seed || [],
     projectRoot,
+    projectRootExplicit,
     initReadme: !!args.initReadme,
   };
 }
@@ -454,14 +481,37 @@ async function copyTemplates({ targetDir, includes, onCollision, placeholders, d
 }
 
 // Copy AI instructions template to repo root as ./ai_instructions.md
-async function installAiInstructions({ placeholders, dryRun, aiTemplate, force }) {
+async function installAiInstructions({
+  placeholders,
+  dryRun,
+  aiTemplate,
+  force,
+  projectRoot,
+  projectRootExplicit = false,
+}) {
   const tpl = aiTemplate ? path.resolve(aiTemplate) : await findAiTemplate(DEFAULT_TEMPLATES_DIR);
   if (!tpl) {
     console.log('⚠️  AI instructions template not found in templates dir. Skipping.');
     return null;
   }
   const text = await readText(tpl, '');
-  const outPath = path.resolve(process.cwd(), 'ai_instructions.md');
+  // Write ai_instructions.md into the project root (projectRoot) if available, otherwise cwd.
+  // This avoids tests/CI that run generation in a temp dir from writing into repo root.
+  const outDir = typeof projectRoot === 'string' && projectRoot ? projectRoot : process.cwd();
+  const resolvedOutDir = path.resolve(outDir);
+  const repoRoot = process.cwd();
+
+  // Hardening: avoid writing ai_instructions.md into the repository root unless the
+  // caller explicitly provided a projectRoot or force was used. This prevents CI/tests
+  // from accidentally overwriting repository files.
+  if (resolvedOutDir === repoRoot && !projectRootExplicit && !force) {
+    console.log(
+      'Skipping writing ai_instructions.md to repository root. Provide --project-root or --force to override.'
+    );
+    return null;
+  }
+
+  const outPath = path.resolve(outDir, 'ai_instructions.md');
   const existsAi = await exists(outPath);
   if (existsAi && !force) {
     console.log(
@@ -659,6 +709,8 @@ async function initCmd(args) {
     dryRun: plan.dryRun,
     aiTemplate: plan.aiTemplate,
     force: plan.force,
+    projectRoot: plan.projectRoot || process.cwd(),
+    projectRootExplicit: !!plan.projectRootExplicit,
   });
 
   const seeded = await seedFromOverview({

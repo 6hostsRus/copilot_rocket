@@ -17,8 +17,34 @@ jobs:
           cache: 'npm'
       - name: Install
         run: npm ci
+      - name: Cleanup potential local cache
+        run: |
+          # remove any accidental local cache file that may have been committed to workspace
+          if [ -f .cr_init_cache.json ]; then
+            rm -f .cr_init_cache.json
+          fi
       - name: Test (node:test)
         run: node --test
+      - name: Ensure AI instructions not modified
+        run: |
+          # If ai_instructions.md is tracked, fail the job if it was modified by the workflow
+          if git ls-files --error-unmatch ai_instructions.md >/dev/null 2>&1; then
+            echo "ai_instructions.md is tracked; verifying no modifications..."
+            if ! git diff --exit-code -- ai_instructions.md; then
+              echo "\nERROR: ai_instructions.md was modified by this job."
+              echo "This repository keeps ai_instructions.md as a source file; CI should not modify it." 
+              echo "Remediation options:"
+              echo "  - Run the scaffold locally and commit the intended changes to ai_instructions.md." 
+              echo "  - If you intentionally want CI to produce ai_instructions.md, run the CLI with --project-root <path> pointing to a workspace path and avoid writing into repo root." 
+              echo "  - To override behavior (not recommended), run with --force." 
+              echo "Aborting CI run due to modified ai_instructions.md." 
+              exit 1
+            fi
+          else
+            # If it's untracked, remove any workspace copy to avoid accidental additions
+            echo "ai_instructions.md is untracked; removing any workspace copy to avoid accidental commits"
+            if [ -f ai_instructions.md ]; then rm -f ai_instructions.md; fi
+          fi
       - name: Pack dry-run (explicit)
         run: npm pack --dry-run
       - name: Verify
