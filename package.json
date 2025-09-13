@@ -6,7 +6,7 @@
     "license": "MIT",
     "author": "Shannon Koski learnintheinfinitive@icloud.com",
     "bin": {
-        "copilot-rocket": "bin/docs-base-scaffold.mjs",
+        "copilot-rocket": "bin/docs-scaffold.mjs",
         "package-bundle": "bin/package-bundle.mjs"
     },
     "files": [

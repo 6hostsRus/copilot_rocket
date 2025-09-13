@@ -21,7 +21,7 @@ npx copilot-rocket init ./docs --init-readme --seed ledger --seed registry
 
 ```sh
 npx copilot-rocket init
-# creates ./docs_base with baseline templates
+# populates ./docs/ai with baseline templates
 ```
 
 Bundle the project (creates tools/dist/project_bundle.zip):
@@ -44,7 +44,7 @@ Every workflow in **copilot-rocket** is built around three pillars:
 
 ```
 **Project:** copilot-rocket
-**Active module:** ./docs_base/000_SCOPE_CARD.md
+**Active module:** ./docs/ai/000_SCOPE_CARD.md
 **Goal:** Add pre-share preview
 **Artifacts to touch:** ./docs/permissions.md
 **DoD:** 3 checks listed
@@ -74,7 +74,7 @@ risk: Medium — check flags
 - **Rooted Commands** ensure reproducible, root-anchored execution.
 - **Work Ledger** records all actions and references commits/PRs.
 
-These match the templates in `./docs_base` and the guidance in **PUBLISH_GUIDE.md**.
+These match the templates in `./docs/ai` and the guidance in **PUBLISH_GUIDE.md**.
 
 ## Conventions
 

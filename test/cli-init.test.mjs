@@ -5,18 +5,18 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 
-const BIN = path.resolve('./bin/docs-base-scaffold.mjs');
+const BIN = path.resolve('./bin/docs-scaffold.mjs');
 
 test('copilot-rocket --help prints usage', () => {
   const out = execFileSync('node', [BIN, '--help'], { encoding: 'utf8' });
-  assert.match(out, /copilot-rocket - scaffold docs_base templates/);
+  assert.match(out, /copilot-rocket - scaffold docs\/ai templates/);
 });
 
 test('init --dry-run does not write files', () => {
   const tmp = mkdtempSync(path.join(os.tmpdir(), 'cr-'));
   try {
     execFileSync('node', [BIN, 'init', tmp, '--dry-run'], { encoding: 'utf8' });
-    assert.strictEqual(existsSync(path.join(tmp, 'docs_base')), false);
+    assert.strictEqual(existsSync(path.join(tmp, 'docs', 'ai')), false);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -27,7 +27,7 @@ test('init creates files and respects --force and --init-readme and --seed', () 
   try {
     // initial scaffold
     execFileSync('node', [BIN, 'init', tmp], { encoding: 'utf8' });
-    assert.ok(existsSync(path.join(tmp, 'docs_base')));
+    assert.ok(existsSync(path.join(tmp, 'docs', 'ai')));
     // without force, running again should skip and not change README
     execFileSync('node', [BIN, 'init', tmp], { encoding: 'utf8' });
     // with init-readme and force, README is created
@@ -38,8 +38,8 @@ test('init creates files and respects --force and --init-readme and --seed', () 
     );
     assert.ok(existsSync(path.join(tmp, 'README.md')));
     assert.ok(
-      existsSync(path.join(tmp, 'work_ledger.yaml')) ||
-        existsSync(path.join(tmp, 'user-decisions-registry.yaml'))
+      existsSync(path.join(tmp, 'docs', 'ai', 'work_ledger.yaml')) ||
+        existsSync(path.join(tmp, 'docs', 'ai', 'user-decisions-registry.yaml'))
     );
   } finally {
     rmSync(tmp, { recursive: true, force: true });

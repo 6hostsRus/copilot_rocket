@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * copilot-rocket
- * Minimal CLI to scaffold docs_base templates into a target repo.
+ * Minimal CLI to scaffold docs/ai templates into a target repo.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,7 +20,7 @@ function scaffold(targetDir, opts = {}) {
   const files = fs.readdirSync(tplDir);
   for (const name of files) {
     const src = path.join(tplDir, name);
-    const dst = path.join(targetDir, 'docs_base', name);
+    const dst = path.join(targetDir, 'docs', 'ai', name);
     // skip samples directory
     if (name === 'samples') continue;
     if (fs.existsSync(dst) && !opts.force) {
@@ -39,7 +39,7 @@ function scaffold(targetDir, opts = {}) {
       console.log('Created README.md at', readmePath);
     }
   }
-  console.log(`Scaffolded docs_base into ${path.join(targetDir, 'docs_base')}`);
+  console.log(`Scaffolded docs/ai into ${path.join(targetDir, 'docs', 'ai')}`);
 }
 
 function usage() {
@@ -48,7 +48,7 @@ function usage() {
   `);
 }
 function help() {
-  console.log(`copilot-rocket - scaffold docs_base templates into a target repo
+  console.log(`copilot-rocket - scaffold docs/ai templates into a target repo
 
 Usage:
   copilot-rocket init [targetDir=.] [--force] [--dry-run] [--seed ledger|registry] [--init-readme]
@@ -60,8 +60,8 @@ Examples:
 Flags:
   --force       Overwrite existing files
   --dry-run     Show what would be written without writing
-  --seed ledger Seed with a sample work_ledger.yaml
-  --seed registry Seed with a sample user-decisions-registry.yaml
+  --seed ledger Seed with a sample work_ledger.yaml (into docs/ai)
+  --seed registry Seed with a sample user-decisions-registry.yaml (into docs/ai)
   --init-readme Create a README.md alongside the scaffold
 `);
 }
@@ -104,7 +104,7 @@ switch (cmd) {
       try {
         const sampleFile = seed === 'ledger' ? 'work_ledger.yaml' : 'user-decisions-registry.yaml';
         const src = path.join(sampleDir, sampleFile);
-        const dst = path.join(target, sampleFile);
+        const dst = path.join(target, 'docs', 'ai', sampleFile);
         if (fs.existsSync(src)) {
           if (!dryRun) copy(src, dst);
           console.log(`${seed} seeded -> ${dst}`);
