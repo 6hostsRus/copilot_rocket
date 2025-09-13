@@ -25,7 +25,8 @@
                "verify": "npm run format && npm run lint && npm run validate && npm run pack:dry && npm run test:install",
           "pack:dry": "npm pack --dry-run",
           "test:install": "node scripts/test-install.js",
-          "prepublishOnly": "npm run verify"
+          "prepublishOnly": "npm run verify",
+          "bundle": "node ./bin/package-bundle.mjs bundle.zip"
      },
      "keywords": [
           "documentation",
