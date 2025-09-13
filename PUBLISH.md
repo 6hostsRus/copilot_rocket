@@ -32,6 +32,7 @@ npm publish --access public
 ## CI publish (GitHub Actions)
 
 - The repository includes `.github/workflows/publish.yml` which will:
+
   - run `npm run verify` on PRs and pushes to `main`.
   - when a tag `vX.Y.Z` is pushed, it will run verify and then publish.
 
