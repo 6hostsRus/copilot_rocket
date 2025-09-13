@@ -1,63 +1,63 @@
 {
-     "name": "copilot-rocket",
-     "version": "1.0.3",
-     "description": "Modular documentation bundle for AI agent workflows: scope cards, rooted commands, work ledger, and more.",
-     "type": "module",
-     "license": "MIT",
-     "author": "Shannon Koski learnintheinfinitive@icloud.com",
-     "bin": {
-          "copilot-rocket": "bin/docs-base-scaffold.mjs",
-          "package-bundle": "bin/package-bundle.mjs"
-     },
-     "files": [
-          "docs_base/**",
-          "bin/**",
-          "README.md",
-          "PUBLISH_GUIDE.md",
-          "RELEASE_CHECKLIST.md",
-          "CHANGELOG.md",
-          "LICENSE"
-     ],
-     "scripts": {
-               "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
-               "format": "prettier -c .",
-               "validate": "node scripts/validate.js",
-               "verify": "npm run format && npm run lint && npm run validate && npm run pack:dry && npm run test:install",
-          "pack:dry": "npm pack --dry-run",
-          "test:install": "node scripts/test-install.js",
-          "prepublishOnly": "npm run verify",
-          "bundle": "node ./bin/package-bundle.mjs bundle.zip"
-     },
-     "keywords": [
-          "documentation",
-          "templates",
-          "scope",
-          "ledger",
-          "ai-agents",
-          "scaffold"
-     ],
-     "repository": {
-          "type": "git",
-          "url": "git+https://github.com/6hostsRus/copilot_rocket.git"
-     },
-     "bugs": {
-          "url": "https://github.com/6hostsRus/copilot_rocket/issues"
-     },
-     "homepage": "https://github.com/6hostsRus/copilot_rocket#readme",
-     "engines": {
-          "node": ">=20",
-          "npm": ">=10"
-     },
-     "dependencies": {
-          "archiver": "^5.3.1",
-          "ignore": "^5.2.0"
-     },
-     "devDependencies": {
-               "eslint": "^9.11.1",
-               "eslint-plugin-markdown": "^5.0.0",
-               "prettier": "^3.3.3",
-                    "ajv": "^8.12.0",
-                    "js-yaml": "^4.1.0",
-                    "fast-glob": "^3.2.12"
-     }
+    "name": "copilot-rocket",
+    "version": "1.1.0",
+    "description": "Modular documentation bundle for AI agent workflows: scope cards, rooted commands, work ledger, and more.",
+    "type": "module",
+    "license": "MIT",
+    "author": "Shannon Koski learnintheinfinitive@icloud.com",
+    "bin": {
+        "copilot-rocket": "bin/docs-base-scaffold.mjs",
+        "package-bundle": "bin/package-bundle.mjs"
+    },
+    "files": [
+        "docs_base/**",
+        "bin/**",
+        "README.md",
+        "PUBLISH_GUIDE.md",
+        "RELEASE_CHECKLIST.md",
+        "CHANGELOG.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
+        "format": "prettier -c .",
+        "validate": "node scripts/validate.js",
+        "verify": "npm run format && npm run lint && npm run validate && npm run pack:dry && npm run test:install",
+        "pack:dry": "npm pack --dry-run",
+        "test:install": "node scripts/test-install.js",
+        "prepublishOnly": "npm run verify",
+        "bundle": "node ./bin/package-bundle.mjs bundle.zip"
+    },
+    "keywords": [
+        "documentation",
+        "templates",
+        "scope",
+        "ledger",
+        "ai-agents",
+        "scaffold"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/6hostsRus/copilot_rocket.git"
+    },
+    "bugs": {
+        "url": "https://github.com/6hostsRus/copilot_rocket/issues"
+    },
+    "homepage": "https://github.com/6hostsRus/copilot_rocket#readme",
+    "engines": {
+        "node": ">=20",
+        "npm": ">=10"
+    },
+    "dependencies": {
+        "archiver": "^5.3.1",
+        "ignore": "^5.2.0"
+    },
+    "devDependencies": {
+        "eslint": "^9.11.1",
+        "eslint-plugin-markdown": "^5.0.0",
+        "prettier": "^3.3.3",
+        "ajv": "^8.12.0",
+        "js-yaml": "^4.1.0",
+        "fast-glob": "^3.2.12"
+    }
 }
