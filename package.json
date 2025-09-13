@@ -1,6 +1,6 @@
 {
      "name": "copilot-rocket",
-     "version": "1.0.2",
+     "version": "1.0.3",
      "description": "Modular documentation bundle for AI agent workflows: scope cards, rooted commands, work ledger, and more.",
      "type": "module",
      "license": "MIT",
