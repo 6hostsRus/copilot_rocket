@@ -1,52 +1,53 @@
 {
-  "name": "docs-base-bundle",
-  "version": "1.0.0",
-  "description": "Modular documentation bundle for AI agent workflows: scope cards, rooted commands, work ledger, and more.",
-  "type": "module",
-  "license": "MIT",
-  "bin": {
-    "docs-base-scaffold": "./bin/docs-base-scaffold.mjs"
-  },
-  "files": [
-    "docs_base/**",
-    "bin/**",
-    "README.md",
-    "PUBLISH_GUIDE.md",
-    "RELEASE_CHECKLIST.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
-    "format": "prettier -c .",
-    "verify": "npm run format && npm run lint && npm run pack:dry && npm run test:install",
-    "pack:dry": "npm pack --dry-run",
-    "test:install": "node scripts/test-install.js",
-    "prepublishOnly": "npm run verify"
-  },
-  "keywords": [
-    "documentation",
-    "templates",
-    "scope",
-    "ledger",
-    "ai-agents",
-    "scaffold"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/<OWNER>/<REPO>.git"
-  },
-  "bugs": {
-    "url": "https://github.com/<OWNER>/<REPO>/issues"
-  },
-  "homepage": "https://github.com/<OWNER>/<REPO>#readme",
-  "engines": {
-    "node": ">=20",
-    "npm": ">=10"
-  },
-  "devDependencies": {
-    "eslint": "^9.11.1",
-    "eslint-plugin-markdown": "^5.0.0",
-    "prettier": "^3.3.3"
-  }
+     "name": "docs-base-bundle",
+     "version": "1.0.0",
+     "description": "Modular documentation bundle for AI agent workflows: scope cards, rooted commands, work ledger, and more.",
+     "type": "module",
+     "license": "MIT",
+     "author": "Shannon Koski learnintheinfinitive@icloud.com",
+     "bin": {
+          "docs-base-scaffold": "./bin/docs-base-scaffold.mjs"
+     },
+     "files": [
+          "docs_base/**",
+          "bin/**",
+          "README.md",
+          "PUBLISH_GUIDE.md",
+          "RELEASE_CHECKLIST.md",
+          "CHANGELOG.md",
+          "LICENSE"
+     ],
+     "scripts": {
+          "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
+          "format": "prettier -c .",
+          "verify": "npm run format && npm run lint && npm run pack:dry && npm run test:install",
+          "pack:dry": "npm pack --dry-run",
+          "test:install": "node scripts/test-install.js",
+          "prepublishOnly": "npm run verify"
+     },
+     "keywords": [
+          "documentation",
+          "templates",
+          "scope",
+          "ledger",
+          "ai-agents",
+          "scaffold"
+     ],
+     "repository": {
+          "type": "git",
+          "url": "git+https://github.com/6hostsRus/copilot_rocket.git"
+     },
+     "bugs": {
+          "url": "https://github.com/6hostsRus/copilot_rocket/issues"
+     },
+     "homepage": "https://github.com/6hostsRus/copilot_rocket#readme",
+     "engines": {
+          "node": ">=20",
+          "npm": ">=10"
+     },
+     "devDependencies": {
+          "eslint": "^9.11.1",
+          "eslint-plugin-markdown": "^5.0.0",
+          "prettier": "^3.3.3"
+     }
 }

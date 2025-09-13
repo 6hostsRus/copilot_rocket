@@ -1,4 +1,4 @@
-//!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * docs-base-scaffold
  * Minimal CLI to scaffold docs_base templates into a target repo.
@@ -32,7 +32,7 @@ function usage() {
   `);
 }
 
-const [,, cmd, maybeDir] = process.argv;
+const [, , cmd, maybeDir] = process.argv;
 const target = path.resolve(process.cwd(), maybeDir || ".");
 
 switch (cmd) {
