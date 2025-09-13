@@ -1,6 +1,6 @@
 # docs_base templates
 
-These templates define the core artifacts for the docs-base-bundle.
+These templates define the core artifacts for `copilot-rocket`.
 
 **Triad Rules** (Scope • Path • Ledger)
 

@@ -8,7 +8,7 @@ import path from 'node:path';
 
 try {
   const tar = execSync('npm pack', { stdio: 'pipe' }).toString().trim().split('\n').pop();
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-base-bundle-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'copilot-rocket-'));
   execSync('npm init -y', { cwd: tmp, stdio: 'ignore' });
   execSync(`npm i ${path.resolve(tar)}`, { cwd: tmp, stdio: 'inherit' });
   console.log('Test install OK:', tmp);

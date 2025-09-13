@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial stable release of `docs-base-bundle`.
+- Initial stable release of `copilot-rocket`.
 - Templates for Scope Card, Rooted Commands, Work Ledger, Bookends, Needs Clarification, and User Decisions.
 - CLI `copilot-rocket` to copy templates into a repo.
 - CI workflow and publish guidance.

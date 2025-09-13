@@ -1,11 +1,11 @@
-# docs-base-bundle
+# copilot-rocket
 
 Modular docs bundle for AI agent workflows. Ships opinionated templates and a tiny CLI.
 
 ## Install
 
 ```sh
-npm i -D docs-base-bundle
+npm i -D copilot-rocket
 ```
 
 ## Use
@@ -26,6 +26,38 @@ Write bundle to project root instead of tools/dist:
 ```sh
 npx package-bundle project_bundle.zip --out-root
 ```
+
+## The Triad in Action
+
+Every workflow in **copilot-rocket** is built around three pillars:
+
+**1. Scope Card** (task framing)
+
+```markdown
+**Project:** copilot-rocket
+**Active module:** ./docs_base/000_SCOPE_CARD.md
+**Goal:** Add pre-share preview
+**Artifacts to touch:** ./docs/permissions.md
+**DoD:** 3 checks listed
+```
+
+2. Rooted Command (always from repo root)
+
+npm run verify
+
+# Reads: ./package.json
+
+# Writes: ./dist/\*
+
+3. Work Ledger (task log with What/Why/Risk)
+
+id: T-024
+title: Add pre-share preview
+state: Done
+changelog:
+what: Added preview spec
+why: Phase 4 acceptance
+risk: Medium — check flags
 
 ## Triad Rules (Scope • Path • Ledger)
 

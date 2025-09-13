@@ -1,0 +1,7 @@
+id: T-001
+title: Sample task seeded by copilot-rocket
+state: Todo
+changelog:
+  what: Initial seed
+  why: Example
+  risk: Low

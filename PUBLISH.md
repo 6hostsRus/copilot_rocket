@@ -1,6 +1,6 @@
 # Publish runbook
 
-This document describes how to publish `docs-base-bundle` to npm, both manually and via CI.
+This document describes how to publish `copilot-rocket` to npm, both manually and via CI.
 
 ## Local manual publish
 

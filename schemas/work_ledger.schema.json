@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Work Ledger",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "state": { "type": "string", "enum": ["Todo", "In Progress", "Done"] },
+    "changelog": {
+      "type": "object",
+      "properties": {
+        "what": { "type": "string" },
+        "why": { "type": "string" },
+        "risk": { "type": "string" }
+      },
+      "required": ["what"]
+    }
+  },
+  "required": ["id", "title"]
+}

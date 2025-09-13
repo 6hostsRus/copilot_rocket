@@ -52,6 +52,20 @@ async function main() {
   const root = path.resolve(process.cwd());
   // parse a simple flag --out-root or -r to write the bundle to project root
   const args = process.argv.slice(2);
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`package-bundle - create a zip of the project excluding .gitignore patterns
+
+Usage:
+  package-bundle [outZip=project_bundle.zip] [--out-root|-r]
+  package-bundle --help
+
+Flags:
+  --out-root, -r   Write the bundle to the repo root instead of tools/dist
+  --help, -h       Show this help
+`);
+    return;
+  }
+
   const outZip = args.find((a) => !a.startsWith('-')) || 'project_bundle.zip';
   const outRoot = args.includes('--out-root') || args.includes('-r');
   const distDir = outRoot ? '.' : path.join('tools', 'dist');
