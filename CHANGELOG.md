@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added `package-bundle` utility (bin) to create a zip of the project excluding .gitignore patterns.
+
+- Added `--out-root` / `-r` option to write the bundle to the project root instead of `tools/dist`.
+
+### Release
+
+- Bump to next patch release (will be tagged as the release commit).
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

@@ -15,6 +15,18 @@ npx copilot-rocket init
 # creates ./docs_base with baseline templates
 ```
 
+Bundle the project (creates tools/dist/project_bundle.zip):
+
+```sh
+npx package-bundle project_bundle.zip
+```
+
+Write bundle to project root instead of tools/dist:
+
+```sh
+npx package-bundle project_bundle.zip --out-root
+```
+
 ## Triad Rules (Scope • Path • Ledger)
 
 - **Scope Card** defines the increment and non-goals.

@@ -6,7 +6,8 @@
      "license": "MIT",
      "author": "Shannon Koski learnintheinfinitive@icloud.com",
      "bin": {
-          "copilot-rocket": "bin/docs-base-scaffold.mjs"
+          "copilot-rocket": "bin/docs-base-scaffold.mjs",
+          "package-bundle": "bin/package-bundle.mjs"
      },
      "files": [
           "docs_base/**",
@@ -44,6 +45,10 @@
      "engines": {
           "node": ">=20",
           "npm": ">=10"
+     },
+     "dependencies": {
+          "archiver": "^5.3.1",
+          "ignore": "^5.2.0"
      },
      "devDependencies": {
           "eslint": "^9.11.1",
