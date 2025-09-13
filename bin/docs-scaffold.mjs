@@ -24,7 +24,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PKG_ROOT = path.resolve(__dirname, '..');
-const DEFAULT_TEMPLATES_DIR = path.resolve(PKG_ROOT, 'docs_base');
+const DEFAULT_TEMPLATES_DIR =
+  process.env.COPILOT_ROCKET_TEMPLATES || path.resolve(PKG_ROOT, 'docs_base');
 
 async function exists(p) {
   try {
@@ -45,8 +46,8 @@ function rel(from, to) {
 }
 
 async function writeFile(dst, data, dryRun = false) {
-  await mkdirp(path.dirname(dst));
   if (dryRun) return;
+  await mkdirp(path.dirname(dst));
   await fsp.writeFile(dst, data);
 }
 async function readJson(p, fallback = null) {
@@ -90,6 +91,27 @@ function parseArgs(argv) {
         args.templates = next;
         i++;
         break;
+      case '--seed-to':
+        args.seedTo = next;
+        i++;
+        break;
+      case '--ai-template':
+        args.aiTemplate = next;
+        i++;
+        break;
+      case '--seed':
+        (args.seed ||= []).push(next);
+        i++;
+        break;
+      case '--no-cache':
+        args.noCache = true;
+        break;
+      case '--list':
+        args.list = true;
+        break;
+      case '--force':
+        args.force = true;
+        break;
       case '--include':
         (args.include ||= []).push(next);
         i++;
@@ -120,13 +142,14 @@ function parseArgs(argv) {
 
 function help() {
   console.log(`
-copilot-rocket docs scaffold
+copilot-rocket - scaffold docs/ai templates into a target repo
 
 Usage:
   npx copilot-rocket init [--target-dir <path>] [--non-interactive]
                           [--overview <path|none>]
                           [--templates default|subset] [--include <name> ...]
                           [--on-collision overwrite|skip|new]
+                         [--ai-template <path>] [--no-cache] [--list] [--force]
                           [--dry-run]
 `);
 }
@@ -135,6 +158,8 @@ async function promptFlow(args) {
   const cachePath = path.resolve(process.cwd(), '.cr_init_cache.json');
   const cache = await readJson(cachePath, {});
 
+  // default non-interactive when stdin is not a TTY
+  args.nonInteractive = !!args.nonInteractive || !process.stdin.isTTY;
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   const ask = async (q, def = '') => {
     const suffix = def ? ` [${def}]` : '';
@@ -149,7 +174,17 @@ async function promptFlow(args) {
   };
 
   // 1) Target Docs Directory
+  // If a positional arg is supplied (project root), prefer creating docs/ai inside it
   let targetDir = args.targetDir || cache.targetDir || 'docs/ai';
+  if (!args.targetDir && args._ && args._[1]) {
+    const pos = args._[1];
+    // if pos doesn't already look like a docs path, treat it as project root
+    if (!/\bdocs(\/|\\|$)/.test(pos)) {
+      targetDir = path.join(normalize(pos), 'docs', 'ai');
+    } else {
+      targetDir = normalize(pos);
+    }
+  }
   if (!args.nonInteractive && !args.targetDir) {
     targetDir = await ask('Where should the docs scaffold be created?', targetDir);
   }
@@ -246,7 +281,13 @@ async function promptFlow(args) {
     onCollision,
     placeholders,
   };
-  await writeFile(cachePath, JSON.stringify(newCache, null, 2), false);
+  if (!args.noCache) {
+    try {
+      await writeFile(cachePath, JSON.stringify(newCache, null, 2), false);
+    } catch (err) {
+      console.error('Warning: failed to write cache:', err.message);
+    }
+  }
 
   return {
     targetDir,
@@ -258,6 +299,12 @@ async function promptFlow(args) {
     placeholders,
     onCollision,
     dryRun,
+    list: args.list || false,
+    force: args.force || false,
+    aiTemplate: args.aiTemplate || null,
+    noCache: args.noCache || false,
+    seedTo: args.seedTo || 'registry',
+    seeds: args.seed || [],
   };
 }
 
@@ -285,7 +332,9 @@ async function findAiTemplate(baseDir) {
         return path.join(baseDir, e.name);
       }
     }
-  } catch {}
+  } catch (err) {
+    console.error('Error scanning templates dir:', err.message);
+  }
   return null;
 }
 
@@ -399,20 +448,41 @@ async function copyTemplates({ targetDir, includes, onCollision, placeholders, d
 }
 
 // Copy AI instructions template to repo root as ./ai_instructions.md
-async function installAiInstructions({ placeholders, dryRun }) {
-  const tpl = await findAiTemplate(DEFAULT_TEMPLATES_DIR);
+async function installAiInstructions({ placeholders, dryRun, aiTemplate, force }) {
+  const tpl = aiTemplate ? path.resolve(aiTemplate) : await findAiTemplate(DEFAULT_TEMPLATES_DIR);
   if (!tpl) {
-    console.log('⚠️  AI instructions template not found in /docs_base. Skipping.');
+    console.log('⚠️  AI instructions template not found in templates dir. Skipping.');
     return null;
   }
   const text = await readText(tpl, '');
   const outPath = path.resolve(process.cwd(), 'ai_instructions.md');
+  const existsAi = await exists(outPath);
+  if (existsAi && !force) {
+    console.log(
+      'AI instructions already exist at',
+      outPath,
+      '- skipping (use --force to override)'
+    );
+    return outPath;
+  }
   await writeFile(outPath, applyPlaceholders(text, placeholders), dryRun);
   return outPath;
 }
 
 // Seed Work Ledger YAML and initial Scope Card
-async function seedFromOverview({ targetDir, overviewPath, placeholders, dryRun }) {
+async function seedFromOverview({
+  targetDir,
+  overviewPath,
+  placeholders,
+  dryRun,
+  seedTo,
+  seeds = [],
+  force = false,
+}) {
+  // sanitize placeholders for YAML embedding
+  const ph = Object.fromEntries(
+    Object.entries(placeholders || {}).map(([k, v]) => [k, String(v).replace(/\"/g, '"')])
+  );
   const registryDir = path.join(targetDir, 'registry');
   const ledgerPath = path.join(registryDir, 'work_ledger.yaml');
   const decisionsPath = path.join(registryDir, 'decisions.md');
@@ -434,7 +504,7 @@ entries:
       - "${rel(process.cwd(), overviewPath || path.join(targetDir, 'PROJECT_OVERVIEW.md'))}"
       - "./${rel(process.cwd(), path.join(targetDir, 'INDEX.md'))}"
 `;
-    await writeFile(ledgerPath, applyPlaceholders(yaml, placeholders), dryRun);
+    await writeFile(ledgerPath, applyPlaceholders(yaml, ph), dryRun);
   }
 
   if (!(await exists(decisionsPath))) {
@@ -449,6 +519,29 @@ entries:
 - _Log blocking questions here with owners and due dates._
 `;
     await writeFile(needsPath, content, dryRun);
+  }
+
+  // handle seed sample files (from docs_base/samples)
+  try {
+    const samplesDir = path.join(DEFAULT_TEMPLATES_DIR, 'samples');
+    for (const s of seeds || []) {
+      const sampleFile = s === 'ledger' ? 'work_ledger.yaml' : 'user-decisions-registry.yaml';
+      const src = path.join(samplesDir, sampleFile);
+      if (!(await exists(src))) continue;
+      const dst =
+        seedTo === 'registry'
+          ? path.join(registryDir, sampleFile)
+          : path.join(targetDir, sampleFile);
+      if ((await exists(dst)) && !force) {
+        console.log('Skipping seed, exists:', rel(process.cwd(), dst));
+        continue;
+      }
+      const text = await readText(src, '');
+      await writeFile(dst, applyPlaceholders(text, placeholders), dryRun);
+      console.log(`Seeded ${s} -> ${rel(process.cwd(), dst)}`);
+    }
+  } catch (err) {
+    console.error('Warning: seeding failed:', err.message);
   }
 
   const scopeDir = path.join(targetDir, 'scope');
@@ -511,9 +604,21 @@ async function initCmd(args) {
   console.log('Dry run       :', plan.dryRun);
   console.log('');
 
-  await mkdirp(plan.targetDir);
+  if (!plan.dryRun) await mkdirp(plan.targetDir);
 
   const finalOverview = await ensureOverview(plan);
+
+  if (plan.list) {
+    const planned = [];
+    for (const folder of plan.includes) {
+      const srcDir = path.join(DEFAULT_TEMPLATES_DIR, folder);
+      const files = await collectFiles(srcDir);
+      for (const f of files) planned.push(path.join(plan.targetDir, f.rel));
+    }
+    console.log('Planned files:');
+    for (const p of planned) console.log(' -', rel(process.cwd(), p));
+    return;
+  }
 
   const written = await copyTemplates(plan);
 
@@ -527,6 +632,8 @@ async function initCmd(args) {
   const aiPath = await installAiInstructions({
     placeholders: plan.placeholders,
     dryRun: plan.dryRun,
+    aiTemplate: plan.aiTemplate,
+    force: plan.force,
   });
 
   const seeded = await seedFromOverview({
@@ -534,6 +641,7 @@ async function initCmd(args) {
     overviewPath: finalOverview,
     placeholders: plan.placeholders,
     dryRun: plan.dryRun,
+    seedTo: plan.seedTo,
   });
 
   const receiptPath = await writeReceipt({
