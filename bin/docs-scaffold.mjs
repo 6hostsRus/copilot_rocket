@@ -610,6 +610,25 @@ async function initCmd(args) {
   console.log('Dry run       :', plan.dryRun);
   console.log('');
 
+  // If listing planned files, don't create directories or write anything.
+  if (plan.list) {
+    const planned = [];
+    for (const folder of plan.includes) {
+      const srcDir = path.join(DEFAULT_TEMPLATES_DIR, folder);
+      const files = await collectFiles(srcDir);
+      for (const f of files) planned.push(path.join(plan.targetDir, f.rel));
+    }
+    console.log('Planned files:');
+    for (const p of planned) console.log(' -', rel(process.cwd(), p));
+    // ensure we don't leave cache if no-cache was requested
+    if (plan.noCache) {
+      try {
+        await fsp.unlink(path.resolve(process.cwd(), '.cr_init_cache.json'));
+      } catch {}
+    }
+    return;
+  }
+
   if (!plan.dryRun) await mkdirp(plan.targetDir);
 
   const finalOverview = await ensureOverview(plan);
