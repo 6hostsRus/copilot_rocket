@@ -99,6 +99,9 @@ function parseArgs(argv) {
         args.aiTemplate = next;
         i++;
         break;
+      case '--init-readme':
+        args.initReadme = true;
+        break;
       case '--seed':
         (args.seed ||= []).push(next);
         i++;
@@ -175,12 +178,13 @@ async function promptFlow(args) {
 
   // 1) Target Docs Directory
   // If a positional arg is supplied (project root), prefer creating docs/ai inside it
+  let projectRoot = process.cwd();
   let targetDir = args.targetDir || cache.targetDir || 'docs/ai';
   if (!args.targetDir && args._ && args._[1]) {
     const pos = args._[1];
-    // if pos doesn't already look like a docs path, treat it as project root
     if (!/\bdocs(\/|\\|$)/.test(pos)) {
-      targetDir = path.join(normalize(pos), 'docs', 'ai');
+      projectRoot = normalize(pos);
+      targetDir = path.join(projectRoot, 'docs', 'ai');
     } else {
       targetDir = normalize(pos);
     }
@@ -283,7 +287,7 @@ async function promptFlow(args) {
   };
   if (!args.noCache) {
     try {
-      await writeFile(cachePath, JSON.stringify(newCache, null, 2), false);
+      await writeFile(cachePath, JSON.stringify(newCache, null, 2), dryRun);
     } catch (err) {
       console.error('Warning: failed to write cache:', err.message);
     }
@@ -303,8 +307,10 @@ async function promptFlow(args) {
     force: args.force || false,
     aiTemplate: args.aiTemplate || null,
     noCache: args.noCache || false,
-    seedTo: args.seedTo || 'registry',
+    seedTo: args.seedTo || 'root',
     seeds: args.seed || [],
+    projectRoot,
+    initReadme: !!args.initReadme,
   };
 }
 
@@ -545,7 +551,7 @@ entries:
   }
 
   const scopeDir = path.join(targetDir, 'scope');
-  await mkdirp(scopeDir);
+  if (!dryRun) await mkdirp(scopeDir);
   const scopePath = path.join(scopeDir, 'SCOPE_INIT.md');
   const scope = `# Scope Card — Initialize Docs
 
@@ -642,6 +648,8 @@ async function initCmd(args) {
     placeholders: plan.placeholders,
     dryRun: plan.dryRun,
     seedTo: plan.seedTo,
+    seeds: plan.seeds,
+    force: plan.force,
   });
 
   const receiptPath = await writeReceipt({
@@ -652,6 +660,17 @@ async function initCmd(args) {
     aiPath,
     dryRun: plan.dryRun,
   });
+
+  // create project README if requested
+  if (plan.initReadme) {
+    const readmePath = path.join(plan.projectRoot || process.cwd(), 'README.md');
+    const shouldWrite = !(await exists(readmePath)) || plan.force;
+    if (shouldWrite) {
+      const content = `# ${path.basename(plan.projectRoot || process.cwd())}\n\nScaffolded by copilot-rocket\n`;
+      await writeFile(readmePath, content, plan.dryRun);
+      if (!plan.dryRun) console.log('Created README.md at', readmePath);
+    }
+  }
 
   console.log('Completed.\n');
   console.log('Index   :', rel(process.cwd(), indexPath));
