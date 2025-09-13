@@ -1,0 +1,10 @@
+{
+  "schemas": {
+    "work_ledger": "./schemas/work_ledger.schema.json",
+    "user_decisions": "./schemas/user-decisions-registry.schema.json"
+  },
+  "files": {
+    "work_ledger": ["**/work_ledger.{yml,yaml,json}"],
+    "user_decisions": ["**/user-decisions-registry.{yml,yaml,json}"]
+  }
+}

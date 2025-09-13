@@ -17,5 +17,7 @@ jobs:
           cache: 'npm'
       - name: Install
         run: npm ci
+      - name: Test (node:test)
+        run: node --test
       - name: Verify
         run: npm run verify

@@ -1,3 +1,4 @@
+
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "User Decisions Registry",
@@ -6,12 +7,19 @@
     "^.+$": {
       "type": "object",
       "properties": {
-        "decision": { "type": "string" },
-        "owner": { "type": "string" },
-        "date": { "type": "string", "format": "date-time" }
+        "decision": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "date": { "type": "string", "format": "date-time" },
+        "area": { "type": "string", "enum": ["naming","style","data","UX","tooling","architecture"] },
+        "applies_to": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^\\./" }
+        },
+        "conflicts_with": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["decision"]
+      "required": ["decision"],
+      "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }
