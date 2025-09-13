@@ -19,5 +19,7 @@ jobs:
         run: npm ci
       - name: Test (node:test)
         run: node --test
+      - name: Pack dry-run (explicit)
+        run: npm pack --dry-run
       - name: Verify
         run: npm run verify

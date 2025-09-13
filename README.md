@@ -42,7 +42,7 @@ Every workflow in **copilot-rocket** is built around three pillars:
 
 **1. Scope Card** (task framing)
 
-```markdown
+```
 **Project:** copilot-rocket
 **Active module:** ./docs_base/000_SCOPE_CARD.md
 **Goal:** Add pre-share preview
@@ -81,6 +81,16 @@ These match the templates in `./docs_base` and the guidance in **PUBLISH_GUIDE.m
 - License: MIT
 - Changelog: Keep a Changelog + SemVer
 - CI: eslint + prettier check + npm pack dry-run + test install
+
+Validate example
+
+```sh
+npm run validate
+```
+
+Custom validation
+
+If you want to point a YAML file at a custom schema, include a `$schema` key in the document that points to a local schema path (relative to the file). The validator will try the `$schema` first, then fall back to the configured/default schemas.
 
 ## Links
 

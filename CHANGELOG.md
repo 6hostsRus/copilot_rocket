@@ -48,3 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed package-bundle path handling for absolute out paths and ensured bundling excludes .gitignore entries correctly.
+
+## [1.1.1] - 2025-09-13
+
+### Changed
+
+- Refinements and CLI tests; added --version flags to CLIs and guarded optional includes in packaging.

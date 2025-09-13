@@ -72,6 +72,17 @@ if (argv.includes('--help') || argv.includes('-h')) {
   process.exit(0);
 }
 
+if (argv.includes('--version') || argv.includes('-v')) {
+  // read package.json version
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+    console.log(pkg.version);
+    process.exit(0);
+  } catch (e) {
+    // fall through
+  }
+}
+
 const cmd = argv[0];
 const maybeDir = argv.find((a) => !a.startsWith('-') && a !== 'init');
 const target = path.resolve(process.cwd(), maybeDir || '.');

@@ -61,7 +61,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["id", "title", "changelog"],
+      "required": ["id", "title", "changelog", "state"],
       "additionalProperties": false
     }
   }

@@ -66,6 +66,16 @@ Flags:
     return;
   }
 
+  if (args.includes('--version') || args.includes('-v')) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+      console.log(pkg.version);
+      return;
+    } catch (e) {
+      // ignore
+    }
+  }
+
   const outZip = args.find((a) => !a.startsWith('-')) || 'project_bundle.zip';
   const outRoot = args.includes('--out-root') || args.includes('-r');
   let outPath;
@@ -80,8 +90,13 @@ Flags:
   const files = listFiles(root, ig);
 
   // ensure some always-included files
-  if (!files.includes('tools/package_bundle.sh')) files.push('tools/package_bundle.sh');
-  if (!files.includes('tools/README.md')) files.push('tools/README.md');
+  if (
+    fs.existsSync(path.join(root, 'tools', 'package_bundle.sh')) &&
+    !files.includes('tools/package_bundle.sh')
+  )
+    files.push('tools/package_bundle.sh');
+  if (fs.existsSync(path.join(root, 'tools', 'README.md')) && !files.includes('tools/README.md'))
+    files.push('tools/README.md');
 
   console.log('Creating bundle:', outPath);
   await createZip(root, files, outPath);
