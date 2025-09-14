@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "Copilot Bundle Config",
+  "type": "object",
+  "required": ["version", "targets", "snippetRoots", "github", "vscode"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "defaults": {
+      "type": "object",
+      "properties": {
+        "tone": {
+          "type": "string"
+        },
+        "tests_required": {
+          "type": "boolean"
+        },
+        "conventional_commits": {
+          "type": "boolean"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "targets": {
+      "type": "object",
+      "required": ["repoRoot", "githubDir", "vscodeDir"],
+      "properties": {
+        "repoRoot": {
+          "type": "string"
+        },
+        "githubDir": {
+          "type": "string"
+        },
+        "vscodeDir": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "snippetRoots": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "vars": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "github": {
+      "type": "object",
+      "properties": {
+        "repowide": {
+          "$ref": "#/$defs/copyList"
+        },
+        "instructions": {
+          "$ref": "#/$defs/copyListWithMeta"
+        },
+        "prompts": {
+          "$ref": "#/$defs/copyList"
+        },
+        "chatmodes": {
+          "$ref": "#/$defs/copyListWithMeta"
+        }
+      },
+      "additionalProperties": false
+    },
+    "vscode": {
+      "type": "object",
+      "required": ["createIfMissing", "settings"],
+      "properties": {
+        "createIfMissing": {
+          "type": "boolean"
+        },
+        "settings": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "copyItem": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "copyItemWithMeta": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/copyItem"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "meta": {
+              "type": "object",
+              "properties": {
+                "applyTo": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "model": {
+                  "type": "string"
+                },
+                "tools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "copyList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/copyItem"
+      }
+    },
+    "copyListWithMeta": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/copyItemWithMeta"
+      }
+    }
+  },
+  "additionalProperties": false
+}

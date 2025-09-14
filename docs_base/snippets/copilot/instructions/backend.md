@@ -1,0 +1,5 @@
+---
+---
+- Node/TS service patterns.
+- Use zod or JSON Schema for validation.
+- Prefer fastify over express when possible.

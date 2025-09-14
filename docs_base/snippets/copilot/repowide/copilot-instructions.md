@@ -1,0 +1,4 @@
+- Tone: {{tone}}
+- Always propose tests with code changes: {{tests_required}}
+- Prefer Conventional Commits in examples: {{conventional_commits}}
+- Project: {{project_name}}

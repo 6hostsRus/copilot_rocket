@@ -1,0 +1,5 @@
+---
+---
+- No secrets in code or logs.
+- Validate inputs; sanitize outputs.
+- Use least privilege for tokens/keys.

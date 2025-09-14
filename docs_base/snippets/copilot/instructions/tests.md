@@ -1,0 +1,4 @@
+---
+---
+- Write unit tests for new logic and update affected tests.
+- Use coverage gates; focus on hot paths.

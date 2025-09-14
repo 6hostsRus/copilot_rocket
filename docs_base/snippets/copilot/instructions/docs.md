@@ -1,0 +1,5 @@
+---
+---
+- Docs default to Markdown.
+- Avoid HTML unless asked.
+- Keep paragraphs short; add code blocks where helpful.
