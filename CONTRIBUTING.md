@@ -5,7 +5,7 @@ Thanks for contributing! A few lightweight rules help keep the project useful an
 Scope-Card-first rule
 
 - When proposing a change or PR, start with a Scope Card (a short description of the increment, non-goals, and DoD).
-- The Scope Card should be included in the PR description or linked to an artifact in `./docs` or `./docs_base`.
+- The Scope Card should be included in the PR description or linked to an artifact in `./docs` or `./docs_library`.
 
 Commit message style
 

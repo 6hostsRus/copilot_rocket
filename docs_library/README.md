@@ -1,6 +1,55 @@
+# docs_library templates
+
+These templates define the core artifacts for `copilot-rocket`.
+
+## Intent: By AI, For AI
+
+The goal is to keep **snippets** as the single editable source, and `.github/` as the generated runtime surface.
+
+- IDE-agnostic consumption
+- Natural-language planning → structured docs
+- Task loop closes with ledger + changelog updates
+
+## Mapping Specification
+
+Snippets library is the source of truth; `.github/` is generated. No manual edits in `.github`.
+
+| Source (docs_library)    | Target (.github)        |
+| ------------------------ | ----------------------- |
+| snippets/prompts/\*      | .github/prompts/\*      |
+| snippets/instructions/\* | .github/instructions/\* |
+| registries/runtime.yaml  | .github/registry.json   |
+
+Generated files start with banner:
+
+```
+<!-- GENERATED from docs_library; DO NOT EDIT IN .github -->
+```
+
+**front-matter**
+Required front-matter for every snippet (YAML at file top):
+
+```yaml
+---
+id: <stable-id> # kebab or dotted id, unique
+kind: prompt|instruction|chatmode
+requires: [] # optional ids this relies on
+vars: [] # optional template vars
+scope: [] # optional glob patterns
+---
+```
+
+**Triad Rules** (Scope • Path • Ledger)
+
+- **Scope Card** drives intent and non-goals.
+- **Rooted Commands** execute work from the project root with explicit paths.
+- **Work Ledger** logs every action (who/what/when/why) and references commit SHAs.
+
+Update these files in your consuming repo, not here in the package.
+
 # Examples and Templates
 
-This file contains concrete examples agents can copy-paste: prompt snippets, `ai:module` headers, Task Card examples, and a note about `scripts/validate.js` so agents don't duplicate validation logic.
+This section contains concrete examples agents can copy-paste: prompt snippets, `ai:module` headers, Task Card examples, and a note about `scripts/validate.js` so agents don't duplicate validation logic.
 
 1. Example ai:module header (drop into source files you want agents to edit)
 
@@ -70,8 +119,3 @@ node scripts/validate.js
 - Always echo `pwd` and `git status -sb` before edits.
 - Propose a minimal plan before modifying files.
 - Run `node scripts/validate.js` when modifying `WORK_LEDGER.md` or decision registries to ensure schema compliance.
-
-7. Next examples you can ask me to add
-
-- Example: a full end-to-end Task Card session transcript.
-- Example: a tiny Node.js script that verifies `docs_base/registries/runtime.yaml` is consistent with `.github/registry.json`.

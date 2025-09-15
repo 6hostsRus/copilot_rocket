@@ -3,7 +3,7 @@
  * copilot-rocket
  * docs-scaffold.mjs
  *
- * Interactive-first CLI to scaffold docs from /docs_base into a target project.
+ * Interactive-first CLI to scaffold docs from /docs_library into a target project.
  * Also:
  *  - Copies AI instructions template to repo root as ./ai_instructions.md
  *  - Seeds Work Ledger and an initial Scope Card against the Project Overview
@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename);
 
 const PKG_ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TEMPLATES_DIR =
-  process.env.COPILOT_ROCKET_TEMPLATES || path.resolve(PKG_ROOT, 'docs_base');
+  process.env.COPILOT_ROCKET_TEMPLATES || path.resolve(PKG_ROOT, 'docs_library');
 
 async function exists(p) {
   try {
@@ -250,7 +250,7 @@ async function promptFlow(args) {
   const defaultIncludes = ['scope', 'bookends', 'registry'];
   let includes = args.include || cache.includes || defaultIncludes;
   if (!args.nonInteractive) {
-    const useDefault = await yesNo('Use the default docs template set from /docs_base?', true);
+    const useDefault = await yesNo('Use the default docs template set from /docs_library?', true);
     if (!useDefault) {
       templateMode = 'subset';
       const raw = await ask(
@@ -341,7 +341,7 @@ async function promptFlow(args) {
   };
 }
 
-// Locate AI instructions template (search common names in /docs_base)
+// Locate AI instructions template (search common names in /docs_library)
 async function findAiTemplate(baseDir) {
   const candidates = [
     '000_ai_instructions.template.md',
@@ -577,7 +577,7 @@ entries:
     await writeFile(needsPath, content, dryRun);
   }
 
-  // handle seed sample files (from docs_base/samples)
+  // handle seed sample files (from docs_library/samples)
   try {
     const samplesDir = path.join(DEFAULT_TEMPLATES_DIR, 'samples');
     for (const s of seeds || []) {
@@ -606,7 +606,7 @@ entries:
   const scope = `# Scope Card — Initialize Docs
 
 ## Goal
-Scaffold docs from /docs_base, install AI instructions, and seed ledger.
+Scaffold docs from /docs_library, install AI instructions, and seed ledger.
 
 ## Artifacts (rooted)
 - ./ai_instructions.md

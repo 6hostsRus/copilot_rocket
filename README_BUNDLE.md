@@ -4,9 +4,9 @@ Drop this bundle at the root of your repo (or into your docs package). Then:
 
 ```bash
 pnpm i
-node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml
 # dry-run to preview changes without writing files
-node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml --dry-run
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml --dry-run
 # or run interactively
 node bin/generate-copilot-bundle.mjs --interactive
 
@@ -28,7 +28,7 @@ node bin/generate-copilot-bundle.mjs --interactive
 ├─ templates/
 │  └─ vscode/
 │     └─ settings.json.hbs
-└─ docs_base/
+└─ docs_library/
    ├─ registries/
    │  └─ copilot-bundle.yaml
    └─ snippets/
@@ -58,7 +58,7 @@ node bin/generate-copilot-bundle.mjs --interactive
             └─ research.md
 ```
 
-> The CLI reads **copilot-bundle.yaml**, pulls snippet content from `docs_base/snippets/copilot/**`, renders Mustache variables, injects front-matter (where applicable), writes `.github/*` files, and **merges** `.vscode/settings.json`.
+> The CLI reads **copilot-bundle.yaml**, pulls snippet content from `docs_library/snippets/copilot/**`, renders Mustache variables, injects front-matter (where applicable), writes `.github/*` files, and **merges** `.vscode/settings.json`.
 
 ### Notes
 

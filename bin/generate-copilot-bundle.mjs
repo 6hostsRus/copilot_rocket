@@ -7,26 +7,8 @@ import path from 'node:path';
 import readline from 'node:readline/promises';
 import YAML from 'yaml';
 
-function deepMerge(a, b) {
-  if (Array.isArray(a) && Array.isArray(b)) return Array.from(new Set([...a, ...b]));
-  if (typeof a === 'object' && typeof b === 'object' && a && b) {
-    const out = { ...a };
-    for (const k of Object.keys(b)) out[k] = k in out ? deepMerge(out[k], b[k]) : b[k];
-    return out;
-  }
-  return b;
-}
-
 async function ensureDir(p) {
   await fsp.mkdir(p, { recursive: true });
-}
-
-async function readJsonMaybe(p) {
-  try {
-    return JSON.parse(await fsp.readFile(p, 'utf8'));
-  } catch {
-    return {};
-  }
 }
 
 function injectFrontMatter(meta, body) {
@@ -80,18 +62,6 @@ async function writeGithubSection(root, cfg, options = { dryRun: false }) {
   for (const it of cfg.github?.prompts || []) await writeItem(it);
   for (const it of cfg.github?.chatmodes || []) await writeItem(it);
   return written;
-}
-
-async function writeVscodeSettings(root, cfg, options = { dryRun: false }) {
-  const vsDir = path.resolve(root, cfg.targets.vscodeDir);
-  if (cfg.vscode?.createIfMissing && !options.dryRun) await ensureDir(vsDir);
-  const settingsPath = path.resolve(vsDir, 'settings.json');
-  const existing = fs.existsSync(settingsPath) ? await readJsonMaybe(settingsPath) : {};
-  const desired = cfg.vscode?.settings || {};
-  const merged = deepMerge(existing, desired);
-  if (!options.dryRun)
-    await fsp.writeFile(settingsPath, JSON.stringify(merged, null, 2) + '\n', 'utf8');
-  return { path: settingsPath, merged };
 }
 
 async function askInteractive(baseCfg) {
@@ -151,7 +121,7 @@ async function main() {
       return m ? [[m[1], m[2] ?? true]] : [];
     })
   );
-  const configPath = args.get('config') || 'docs_base/registries/copilot-bundle.yaml';
+  const configPath = args.get('config') || 'docs_library/registries/copilot-bundle.yaml';
   const interactive = !!args.get('interactive');
   const dryRun = !!args.get('dry-run') || !!args.get('dryrun');
   const jsonOut = !!args.get('json') || !!args.get('json-output');
@@ -170,19 +140,17 @@ async function main() {
   ).map((p) => path.resolve(repoRoot, p));
 
   const written = await writeGithubSection(repoRoot, cfg, { dryRun });
-  const vs = await writeVscodeSettings(repoRoot, cfg, { dryRun });
 
   const output = {
     dryRun: !!dryRun,
     github: { files: written },
-    vscode: { settingsPath: vs.path, merged: vs.merged },
   };
 
   if (jsonOut) {
     console.log(JSON.stringify(output, null, 2));
   } else {
     console.log(
-      `✅ Copilot bundle ${dryRun ? '(dry-run) ' : ''}generated:\n- .github/* wired from snippet roots (${written.length} files)\n- .vscode/settings.json ${dryRun ? 'previewed' : 'merged'} at ${vs.path}`
+      `✅ Copilot bundle ${dryRun ? '(dry-run) ' : ''}generated:\n- .github/* wired from snippet roots (${written.length} files)`
     );
   }
 }
@@ -196,12 +164,4 @@ if (process.argv[1] && process.argv[1].endsWith('generate-copilot-bundle.mjs')) 
 }
 
 // exports for testing
-export {
-  deepMerge,
-  injectFrontMatter,
-  loadConfig,
-  pickSnippet,
-  renderString,
-  writeGithubSection,
-  writeVscodeSettings,
-};
+export { injectFrontMatter, loadConfig, pickSnippet, renderString, writeGithubSection };

@@ -1,6 +1,6 @@
 # AI Instructions — Template (package copy)
 
-> Path in package: `./docs_base/01-ai_instructions.template.md`  
+> Path in package: `./docs_library/01-ai_instructions.template.md`  
 > When a project is scaffolded with **copilot-rocket**, copy this to the project root as `./ai_instructions.md`.
 
 ---
@@ -28,16 +28,16 @@ Assist on **copilot-rocket** using the **copilot-rocket** workflow. Convert natu
 
 - **Templates & policies (flat numbering):**
   - `000_ai_instructions.template.md`
-  - `./docs_base/000_SCOPE_CARD.md`
-  - `./docs_base/010_ROOTED_COMMANDS.md`
-  - `./docs_base/020_WORK_LEDGER.md`
-  - `./docs_base/030_BOOKENDS.md`
-  - `./docs_base/040_NEEDS_CLARIFICATION.md`
-  - `./docs_base/050_USER_DECISIONS.md`
-  - `./docs_base/README.md` (overview)
+  - `./docs_library/000_SCOPE_CARD.md`
+  - `./docs_library/010_ROOTED_COMMANDS.md`
+  - `./docs_library/020_WORK_LEDGER.md`
+  - `./docs_library/030_BOOKENDS.md`
+  - `./docs_library/040_NEEDS_CLARIFICATION.md`
+  - `./docs_library/050_USER_DECISIONS.md`
+  - `./docs_library/README.md` (overview)
 - **Samples:**
-  - `./docs_base/samples/work_ledger.yaml`
-  - `./docs_base/samples/user-decisions-registry.yaml`
+  - `./docs_library/samples/work_ledger.yaml`
+  - `./docs_library/samples/user-decisions-registry.yaml`
 - **Schemas:**
   - `./schemas/work_ledger.schema.json`
   - `./schemas/user-decisions-registry.schema.json`
@@ -75,7 +75,7 @@ Optional source material (if present in a consuming project):
 ## Primary flow: overview → docs
 
 1. Read inputs (if any) from `./project_overview/`.
-2. Populate **project docs** under `./docs/**` using templates from `./docs_base/**`. Keep numbering convention.
+2. Populate **project docs** under `./docs/**` using templates from `./docs_library/**`. Keep numbering convention.
 3. Update `./work_ledger.yaml` (include **What/Why/Risk**, state, artifacts).
 4. If the user made a decision that affects patterns, propose an entry in `./user-decisions-registry.yaml`.
 5. Run validation: `npm run validate`.
