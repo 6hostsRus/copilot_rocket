@@ -1,0 +1,9 @@
+version: 1
+prompts:
+  - source: snippets/prompts/codegen.function.md
+    target: prompts/codegen.function.md
+instructions:
+  - source: snippets/instructions/code.conventions.md
+    target: instructions/code.conventions.md
+  - source: snippets/instructions/comments.top_level.md
+    target: instructions/comments.top_level.md

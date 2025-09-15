@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Runtime Registry",
+  "type": "object",
+  "required": [
+    "version"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "prompts": {
+      "type": "array"
+    },
+    "instructions": {
+      "type": "array"
+    }
+  }
+}
