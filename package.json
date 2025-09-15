@@ -19,8 +19,10 @@
         "LICENSE"
     ],
     "scripts": {
-        "generate": "node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml",
-        "generate:interactive": "node bin/generate-copilot-bundle.mjs --interactive",
+        "generate": "node bin/generate.mjs",
+        "verify-runtime": "node bin/verify-runtime.mjs",
+        "generate-copilot-bundle": "node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml",
+        "generate-copilot-bundle:interactive": "node bin/generate-copilot-bundle.mjs --interactive",
         "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
         "format": "prettier -c .",
         "validate": "node scripts/validate.js",
