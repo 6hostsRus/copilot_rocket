@@ -1,3 +1,18 @@
+---
+id: copilot.instructions.workflow.user_decisions
+title: User Decisions Registry
+kind: instruction
+category: workflow
+summary: Recording irreversible or high-impact user decisions with schema guidance.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
+---
+
 # User Decisions Registry
 
 > Record irreversible or high-impact choices with context; each decision is a named object keyed by an id.

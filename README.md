@@ -48,13 +48,13 @@ This package includes a small CLI to render Copilot behavior snippets into a rep
 Basic usage:
 
 ```sh
-node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/runtime.yaml
 ```
 
 Preview changes without writing files:
 
 ```sh
-node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml --dry-run
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/runtime.yaml --dry-run
 ```
 
 Useful flags:

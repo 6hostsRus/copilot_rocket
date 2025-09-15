@@ -1,3 +1,18 @@
+---
+id: copilot.instructions.workflow.work_ledger
+title: Work Ledger
+kind: instruction
+category: workflow
+summary: The work ledger template and rules for logging agent activity and changes.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
+---
+
 # Work Ledger
 
 > Single source of truth for work performed. Each entry is a ledger entry linking Scope Card intent, change, and evidence.

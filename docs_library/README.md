@@ -26,16 +26,24 @@ Generated files start with banner:
 <!-- GENERATED from docs_library; DO NOT EDIT IN .github -->
 ```
 
-**front-matter**
+## front-matter
+
 Required front-matter for every snippet (YAML at file top):
 
 ```yaml
 ---
-id: <stable-id> # kebab or dotted id, unique
-kind: prompt|instruction|chatmode
-requires: [] # optional ids this relies on
+id: <stable-id> # dotted id, unique
+title: <title>
+kind: prompt # prompt | instruction | chatmode | repowide
+category: <category> # category for use
+summary: <summary> # i.e.Generate a component with tests and story.
+tags: [] # optional, tags for filtering
+weight: <number> # for ordering in indexes
+requires: [] # optional, ids of dependencies
+provides: [] # optional, what this prompt tends to create i.e. component.md, test.spec.ts
 vars: [] # optional template vars
-scope: [] # optional glob patterns
+applyTo: [] # optional glob patterns
+version: <version> # revision of asset
 ---
 ```
 

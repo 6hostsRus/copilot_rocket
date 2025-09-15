@@ -1,11 +1,36 @@
+---
+id: copilot.instructions.workflow.task_card
+title: Task Card
+kind: instruction
+category: workflow
+summary: Template for task cards used to request work from agents.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
+---
+
 # Task Cards: runbook and templates
 
-Purpose: provide a compact, repeatable pattern agents can use to run focused work sessions (Task Cards) that are small, verifiable, and easy to close.
+---
 
-Why Task Cards matter:
+id: copilot.instructions.workflow.task_card
+title: Task Card
+kind: instruction
+category: workflow
+summary: Template for task cards used to request work from agents.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
 
-- Keep work small and reviewable so agents don't drift.
-- Encapsulate intent, acceptance, scope, and tests in one place.
+---
 
 Task Card minimal structure (YAML block to paste into `WORK_LEDGER.md`):
 

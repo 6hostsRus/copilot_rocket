@@ -4,9 +4,9 @@ Drop this bundle at the root of your repo (or into your docs package). Then:
 
 ```bash
 pnpm i
-node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/runtime.yaml
 # dry-run to preview changes without writing files
-node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml --dry-run
+node bin/generate-copilot-bundle.mjs --config=docs_library/registries/runtime.yaml --dry-run
 # or run interactively
 node bin/generate-copilot-bundle.mjs --interactive
 

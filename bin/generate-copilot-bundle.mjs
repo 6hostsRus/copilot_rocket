@@ -181,7 +181,7 @@ async function main() {
       }
     }
   }
-  const configPath = args.get('config') || 'docs_library/registries/copilot-bundle.yaml';
+  const configPath = args.get('config') || 'docs_library/registries/runtime.yaml';
   const varsFileFlag = args.get('vars-file') || args.get('varsFile');
   const varsInlineFlag = args.get('vars');
   const interactive = !!args.get('interactive');

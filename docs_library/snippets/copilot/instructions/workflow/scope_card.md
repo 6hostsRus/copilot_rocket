@@ -1,3 +1,18 @@
+---
+id: copilot.instructions.workflow.scope_card
+title: Scope Card
+kind: instruction
+category: workflow
+summary: Template and rules for defining the scope of a task or session.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
+---
+
 # Scope Card
 
 > Purpose: Define the smallest valuable increment. Lock scope. Capture risks and non-goals.

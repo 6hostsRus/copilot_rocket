@@ -31,7 +31,7 @@ test('renderString replaces mustache variables', () => {
 test('writeGithubSection dry-run returns list of planned files', async () => {
   const tmp = mkdtempSync(path.join(os.tmpdir(), 'cr-'));
   try {
-    const cfg = await loadConfig(path.resolve('./docs_library/registries/copilot-bundle.yaml'));
+    const cfg = await loadConfig(path.resolve('./docs_library/registries/runtime.yaml'));
     cfg.targets = { ...(cfg.targets || {}), githubDir: '.github-test' };
     cfg.snippetRoots = cfg.snippetRoots || ['docs_library/snippets/copilot'];
     const written = await writeGithubSection(tmp, cfg, { dryRun: true });

@@ -1,3 +1,18 @@
+---
+id: copilot.repowide.ai_instructions_template
+title: AI Instructions Template
+kind: repowide
+category: repowide
+summary: Template for repository-wide AI instructions and agent configuration.
+tags: []
+weight: 20
+requires: []
+provides: []
+vars: []
+applyTo: []
+version: 1.0.0
+---
+
 # AI Instructions — Template (package copy)
 
 > Path in package: `./docs_library/01-ai_instructions.template.md`  

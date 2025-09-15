@@ -19,7 +19,7 @@
         "LICENSE"
     ],
     "scripts": {
-        "generate-copilot-bundle": "node bin/generate-copilot-bundle.mjs --config=docs_library/registries/copilot-bundle.yaml",
+        "generate-copilot-bundle": "node bin/generate-copilot-bundle.mjs --config=docs_library/registries/runtime.yaml",
         "generate-copilot-bundle:interactive": "node bin/generate-copilot-bundle.mjs --interactive",
         "lint": "eslint . --ext .js,.mjs,.cjs,.md --max-warnings=0",
         "format": "prettier -c .",

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { loadConfig, writeGithubSection } from './generate-copilot-bundle.mjs';
 
 async function main() {
-  const cfg = await loadConfig('docs_library/registries/copilot-bundle.yaml');
+  const cfg = await loadConfig('docs_library/registries/runtime.yaml');
   const repoRoot = path.resolve(cfg.targets?.repoRoot || '.');
   const written = await writeGithubSection(repoRoot, cfg, { dryRun: true });
   const out = { dryRun: true, github: { files: written } };

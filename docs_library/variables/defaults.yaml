@@ -1,0 +1,7 @@
+project_name: co-pilot_rocket_project
+tone: concise
+model: gpt-5-mini
+conventional_commits: |
+  feat, fix, docs, style, refactor, test, chore
+ci_command: npm test && npm lint
+risk_section: true
