@@ -1,0 +1,17 @@
+# Example variables to override runtime registry values
+# Place a file named `copilot.vars.yaml` at repo root or pass `--vars-file=copilot.vars.yaml`
+
+project_name: 'my-awesome-project'
+model: 'gpt-4o-mini'
+# override where generated files are written relative to repo root
+targets:
+  githubDir: '.github'
+  vscodeDir: '.vscode'
+
+# snippetRoots are resolved relative to repo root; this is an example
+snippetRoots:
+  - 'docs_library/snippets/copilot'
+
+# custom vars for templates
+org_style: 'modern'
+ci_command: 'pnpm test --silent && pnpm lint'

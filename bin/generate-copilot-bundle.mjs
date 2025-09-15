@@ -37,6 +37,38 @@ function renderString(str, vars) {
   return Mustache.render(String(str), vars || {});
 }
 
+// Deep merge src into target (mutates and returns target)
+function deepMerge(target, src) {
+  if (!src) return target;
+  for (const k of Object.keys(src)) {
+    const srcVal = src[k];
+    const tgtVal = target[k];
+    if (Array.isArray(srcVal)) {
+      target[k] = srcVal.slice();
+    } else if (srcVal && typeof srcVal === 'object') {
+      target[k] = deepMerge(tgtVal && typeof tgtVal === 'object' ? { ...tgtVal } : {}, srcVal);
+    } else {
+      target[k] = srcVal;
+    }
+  }
+  return target;
+}
+
+// Recursively render all string values in an object/array using Mustache and vars
+function renderObject(obj, vars) {
+  if (obj == null) return obj;
+  if (typeof obj === 'string') return renderString(obj, vars);
+  if (Array.isArray(obj)) return obj.map((v) => renderObject(v, vars));
+  if (typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      out[k] = renderObject(v, vars);
+    }
+    return out;
+  }
+  return obj;
+}
+
 async function writeGithubSection(root, cfg, options = { dryRun: false }) {
   const ghDir = path.resolve(root, cfg.targets.githubDir);
   if (!options.dryRun) await ensureDir(ghDir);
@@ -44,8 +76,17 @@ async function writeGithubSection(root, cfg, options = { dryRun: false }) {
 
   const writeItem = async (item) => {
     const src = await pickSnippet(cfg.snippetRoots, item.from);
-    if (!src) throw new Error(`Snippet not found: ${item.from}`);
-    let body = await fsp.readFile(src, 'utf8');
+    let body = '';
+    if (!src) {
+      if (options.dryRun) {
+        console.warn(`⚠️  snippet not found (dry-run): ${item.from}`);
+        body = `<!-- MISSING SNIPPET (dry-run): ${item.from} -->\n`;
+      } else {
+        throw new Error(`Snippet not found: ${item.from}`);
+      }
+    } else {
+      body = await fsp.readFile(src, 'utf8');
+    }
     body = renderString(body, cfg.vars);
     const metaRaw = item.meta
       ? JSON.parse(renderString(JSON.stringify(item.meta), cfg.vars))
@@ -118,13 +159,31 @@ async function loadConfig(configPath) {
 }
 
 async function main() {
-  const args = new Map(
-    process.argv.slice(2).flatMap((a) => {
-      const m = a.match(/^--([^=]+)(?:=(.*))?$/);
-      return m ? [[m[1], m[2] ?? true]] : [];
-    })
-  );
+  // Parse CLI args supporting both `--flag=value` and `--flag value` forms
+  const argv = process.argv.slice(2);
+  const args = new Map();
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    const m = a.match(/^--([^=]+)(?:=(.*))?$/);
+    if (m) {
+      const key = m[1];
+      if (m[2] !== undefined) {
+        args.set(key, m[2]);
+      } else {
+        // If next arg exists and isn't a flag, consume it as the value
+        const next = argv[i + 1];
+        if (next && !next.startsWith('--')) {
+          args.set(key, next);
+          i++;
+        } else {
+          args.set(key, true);
+        }
+      }
+    }
+  }
   const configPath = args.get('config') || 'docs_library/registries/copilot-bundle.yaml';
+  const varsFileFlag = args.get('vars-file') || args.get('varsFile');
+  const varsInlineFlag = args.get('vars');
   const interactive = !!args.get('interactive');
   const dryRun = !!args.get('dry-run') || !!args.get('dryrun');
   const jsonOut = !!args.get('json') || !!args.get('json-output');
@@ -136,6 +195,47 @@ async function main() {
 
   // Allow overriding repo root from CLI for CI usage
   const repoRoot = path.resolve(repoRootFlag || cfg.targets?.repoRoot || '.');
+
+  // Load variables from file or inline flag and merge with defaults
+  let varsFromFile = null;
+  let varsInline = null;
+  if (varsFileFlag) {
+    try {
+      const varsPath = path.resolve(repoRoot, String(varsFileFlag));
+      if (fs.existsSync(varsPath)) {
+        const raw = await fsp.readFile(varsPath, 'utf8');
+        varsFromFile = YAML.parse(raw);
+      } else {
+        throw new Error(`vars file not found: ${varsPath}`);
+      }
+    } catch (err) {
+      throw new Error(`failed to load vars file: ${err.message || err}`);
+    }
+  }
+  if (varsInlineFlag) {
+    try {
+      // Try JSON first, then YAML
+      try {
+        varsInline = JSON.parse(String(varsInlineFlag));
+      } catch (_) {
+        varsInline = YAML.parse(String(varsInlineFlag));
+      }
+    } catch (err) {
+      throw new Error(`failed to parse --vars: ${err.message || err}`);
+    }
+  }
+
+  // Merge precedence: defaults <- cfg.vars <- varsFromFile <- varsInline
+  const mergedVars = deepMerge(
+    deepMerge({ ...(cfg.defaults || {}) }, cfg.vars || {}),
+    deepMerge(varsFromFile || {}, varsInline || {})
+  );
+
+  // Ensure cfg.vars is set to the merged result for downstream rendering
+  cfg.vars = mergedVars;
+
+  // Render template placeholders across the entire config using merged vars
+  cfg = renderObject(cfg, mergedVars);
 
   // Normalize snippet roots relative to repo or CLI-provided value
   cfg.snippetRoots = (

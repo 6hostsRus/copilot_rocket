@@ -1,9 +1,88 @@
 version: 1
-prompts:
-  - source: snippets/prompts/codegen.function.md
-    target: prompts/codegen.function.md
-instructions:
-  - source: snippets/instructions/code.conventions.md
-    target: instructions/code.conventions.md
-  - source: snippets/instructions/comments.top_level.md
-    target: instructions/comments.top_level.md
+
+defaults:
+  tone: concise
+  tests_required: true
+  conventional_commits: true
+  model: gpt-5-mini
+
+targets:
+  repoRoot: '.'
+  githubDir: '.github'
+  vscodeDir: '.vscode'
+
+snippetRoots:
+  - 'docs_library/snippets/copilot'
+
+vars:
+  project_name: 'co-pilot_rocket'
+  org_style: 'minimal'
+  ci_command: 'pnpm test && pnpm lint'
+  risk_section: true
+  tone: 'concise'
+
+github:
+  repowide:
+    - from: 'repowide/copilot-instructions.md'
+      to: 'copilot-instructions.md'
+    - from: 'agents/AGENTS.md'
+      to: 'AGENTS.md'
+
+  instructions:
+    - from: 'instructions/frontend.md'
+      to: 'instructions/frontend.instructions.md'
+      meta:
+        applyTo:
+          - 'apps/web/**'
+          - '**/*.tsx'
+    - from: 'instructions/backend.md'
+      to: 'instructions/backend.instructions.md'
+      meta:
+        applyTo:
+          - 'apps/api/**'
+          - '**/*.ts'
+    - from: 'instructions/docs.md'
+      to: 'instructions/docs.instructions.md'
+      meta:
+        applyTo:
+          - 'docs/**'
+          - '**/*.md'
+    - from: 'instructions/tests.md'
+      to: 'instructions/tests.instructions.md'
+      meta:
+        applyTo:
+          - '**/*.{spec,test}.{ts,tsx,dart,py}'
+    - from: 'instructions/security.md'
+      to: 'instructions/security.instructions.md'
+      meta:
+        applyTo:
+          - '**/*'
+
+  prompts:
+    - from: 'prompts/code-review.md'
+      to: 'prompts/code-review.prompt.md'
+    - from: 'prompts/pr-description.md'
+      to: 'prompts/pr-description.prompt.md'
+    - from: 'prompts/generate-component.md'
+      to: 'prompts/generate-component.prompt.md'
+    - from: 'prompts/test-scaffold.md'
+      to: 'prompts/test-scaffold.prompt.md'
+    - from: 'prompts/refactor.md'
+      to: 'prompts/refactor.prompt.md'
+    - from: 'prompts/docs-rewrite.md'
+      to: 'prompts/docs-rewrite.prompt.md'
+    - from: 'prompts/security-scan.md'
+      to: 'prompts/security-scan.prompt.md'
+
+  chatmodes:
+    - from: 'chatmodes/planner.md'
+      to: 'chatmodes/planner.chatmode.md'
+      meta:
+        model: '{{model}}'
+        tools: ['codebase', 'search', 'githubRepo']
+    - from: 'chatmodes/strict-reviewer.md'
+      to: 'chatmodes/strict-reviewer.chatmode.md'
+    - from: 'chatmodes/rapid-editor.md'
+      to: 'chatmodes/rapid-editor.chatmode.md'
+    - from: 'chatmodes/research.md'
+      to: 'chatmodes/research.chatmode.md'
