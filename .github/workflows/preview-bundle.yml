@@ -1,0 +1,22 @@
+name: Preview Copilot Bundle
+
+on:
+  push:
+    branches: [main, feat/**]
+  pull_request:
+    branches: [main]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run preview and validate JSON
+        run: |
+          node -e "(async()=>{ const { exec } = require('child_process'); const util = require('util'); const ex = util.promisify(exec); try { const { stdout } = await ex('node bin/preview-copilot-bundle.mjs'); const out = JSON.parse(stdout); if(!out.github || !Array.isArray(out.github.files) || out.github.files.length===0) { console.error('No github files planned'); process.exit(2); } console.log('Preview ok, files:', out.github.files.length); } catch(err){ console.error(err.stdout||err); process.exit(1); } })()"

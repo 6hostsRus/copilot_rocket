@@ -41,6 +41,27 @@ Bundle the project (creates tools/dist/project_bundle.zip):
 npx package-bundle project_bundle.zip
 ```
 
+## Copilot bundle generator
+
+This package includes a small CLI to render Copilot behavior snippets into a repo layout. It pulls snippet content from `docs_base/snippets/copilot/**`, renders Mustache variables, injects optional YAML front-matter, writes files under `.github/*`, and merges `.vscode/settings.json`.
+
+Basic usage:
+
+```sh
+node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml
+```
+
+Preview changes without writing files:
+
+```sh
+node bin/generate-copilot-bundle.mjs --config=docs_base/registries/copilot-bundle.yaml --dry-run
+```
+
+Useful flags:
+
+- `--repo-root` or `--repoRoot` — override the target repository root (helpful in CI)
+- `--snippetRoots` — comma-separated override of snippet root paths
+
 Write bundle to project root instead of tools/dist:
 
 ```sh
