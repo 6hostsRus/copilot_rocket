@@ -7,6 +7,8 @@ import path from 'node:path';
 import readline from 'node:readline/promises';
 import YAML from 'yaml';
 
+const BANNER = '<!-- GENERATED from docs_library; DO NOT EDIT IN .github -->\n';
+
 async function ensureDir(p) {
   await fsp.mkdir(p, { recursive: true });
 }
@@ -49,6 +51,7 @@ async function writeGithubSection(root, cfg, options = { dryRun: false }) {
       ? JSON.parse(renderString(JSON.stringify(item.meta), cfg.vars))
       : null;
     if (metaRaw) body = injectFrontMatter(metaRaw, body);
+    body = BANNER + body;
     const outPath = path.resolve(ghDir, item.to);
     if (!options.dryRun) {
       await ensureDir(path.dirname(outPath));
